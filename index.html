@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Parser API Testing</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; font-size: 24px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #34495e; }
+        textarea { width: 100%; height: 120px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; font-size: 14px; resize: vertical; }
+        button { background-color: #3498db; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #2980b9; }
+        .output-section { margin-top: 30px; }
+        pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 14px; }
+        .error { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Graph / Tree Parser Test</h1>
+        <div class="form-group">
+            <label for="jsonInput">Enter JSON payload:</label>
+            <textarea id="jsonInput">{"data": ["A->B", "A->C", "B->D", "B->D", "A->A", "X->", "1->2"]}</textarea>
+        </div>
+        <button onclick="submitData()">Process Relationships</button>
+
+        <div class="output-section">
+            <label>API Response:</label>
+            <pre id="apiOutput">Response will appear here...</pre>
+        </div>
+    </div>
+
+    <script>
+        async function submitData() {
+            const inputEl = document.getElementById('jsonInput');
+            const outputEl = document.getElementById('apiOutput');
+            
+            outputEl.textContent = 'Processing request...';
+            outputEl.className = '';
+
+            try {
+                // Parse to ensure valid JSON format before sending
+                const payload = JSON.parse(inputEl.value);
+
+                // Assuming backend is hosted locally or on a deployed URL
+                const response = await fetch('http://localhost:3000/bfhl', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                outputEl.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                outputEl.textContent = 'Error: ' + err.message;
+                outputEl.className = 'error';
+            }
+        }
+    </script>
+</body>
+</html>
